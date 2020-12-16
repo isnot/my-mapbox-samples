@@ -69,8 +69,8 @@
     <h3 class="helpContent">Help</h3>
     <p>※マップのどこかをクリックすると、このHelp画面を閉じます。</p>
     <ul class="legend">
-      <li><span class="fa fa-home helpLegend" aria-hidden="true">&nbsp;</span>マップの表示範囲を、HOMEへ移動します</li>
-      <li><span class="fa fa-question-circle helpLegend" aria-hidden="true">&nbsp;</span>このヘルプメッセージを表示します</li>
+      <li><span class="fas fa-home helpLegend" aria-hidden="true">&nbsp;</span>マップの表示範囲を、HOMEへ移動します</li>
+      <li><span class="fas fa-question-circle helpLegend" aria-hidden="true">&nbsp;</span>このヘルプメッセージを表示します</li>
     </ul>
   </div>
 </div>
@@ -109,7 +109,7 @@ class MoveToHomeControl extends AbstractUserControl {
     this._container = document.createElement('div');
     this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
     this._container.innerHTML = `<button class="mapboxgl-ctrl-MoveToHome" type="button" aria-label="Move to Home" title="&#x1F3E0;Move to Home">
-  <span class="mapboxgl-ctrl-icon fa fa-home" aria-hidden="true">&nbsp;</span>
+  <span class="mapboxgl-ctrl-icon fas fa-home" aria-hidden="true">&nbsp;</span>
 </button>`;
     this._container.addEventListener('click', () => {
       if (map.loaded()) {
@@ -131,7 +131,7 @@ class HelpControl extends AbstractUserControl {
     this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
     this._container.textContent = 'Help';
     this._container.innerHTML = `<button class="mapboxgl-ctrl-Help" type="button" aria-label="Help" title="&#x2753;Help">
-    <span class="mapboxgl-ctrl-icon fa fa-question-circle" aria-hidden="true">&nbsp;</span>
+    <span class="mapboxgl-ctrl-icon fas fa-question-circle" aria-hidden="true">&nbsp;</span>
   </button>`;
     this._container.addEventListener('click', () => {
       document.getElementById('popupHelpContent').classList.toggle('hidden');
