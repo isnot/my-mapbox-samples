@@ -2,21 +2,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Sample Map | custom buttons | isnot N3 | isnot N3</title>
+<title>Sample Map | custom buttons</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-<meta name="description" content="マップ コントロールの表示">
+<meta name="description" content="地図内に独自のボタン（コントロール）を追加する">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Sample Map | custom buttons">
 <meta property="og:locale" content="ja_JP">
 <meta property="article:author" content="isnot">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro#.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/fontawesome.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/solid.min.css">
-<link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css" />
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/sakura.css/css/sakura.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/fontawesome.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/solid.min.css">
+<link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css">
 <style>
-  #map { height: 600px; }
+  .hidden { display: none; }
   .fa-question-circle, .fa-home, .helpLegend { font-size: 24px; padding-left: 3px; } /* Home and Help Control buttons */
 
+  #map { height: 600px; }
   #popupHelpContent {
     position:absolute;
     top: 0;
@@ -41,17 +42,6 @@
     text-shadow: 2px 2px 0px #111;
     font-size: 30px;
   }
-
-  .hidden { display: none; }
-  #main, #sidebar {
-    display: block;
-    float: left;
-    width: 100%;
-    margin: 0;
-  }
-  .article-meta { display: none; }
-  .widget-wrap { display: none; }
-  #owner { display: block; }
 </style>
 </head>
 <body>
@@ -60,23 +50,22 @@
       <h1>Sample Map | custom buttons</h1>
     </header>
     <div class="article">
-
-<ul>
-  <li><a target="_blank" rel="noopener" href="https://docs.mapbox.com/jp/mapbox-gl-js/example/navigation/">マップナビゲーションコントロールの表示</a></li>
-  <li><a target="_blank" rel="noopener" href="https://docs.mapbox.com/mapbox-gl-js/api/markers/#icontrol">IControl</a></li>
-</ul>
-<div id="map">
-  <div id="popupHelpContent" class="hidden">
-    <h3 class="helpContent">Help</h3>
-    <p>※マップのどこかをクリックすると、このHelp画面を閉じます。</p>
-    <ul class="legend">
-      <li><span class="fas fa-home helpLegend" aria-hidden="true">&nbsp;</span>マップの表示範囲を、HOMEへ移動します</li>
-      <li><span class="fas fa-question-circle helpLegend" aria-hidden="true">&nbsp;</span>このヘルプメッセージを表示します</li>
-    </ul>
-  </div>
-</div>
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
-<script>
+      <ul>
+        <li><a target="_blank" rel="noopener" href="https://docs.mapbox.com/jp/mapbox-gl-js/example/navigation/">マップナビゲーションコントロールの表示</a></li>
+        <li><a target="_blank" rel="noopener" href="https://docs.mapbox.com/mapbox-gl-js/api/markers/#icontrol">IControl</a></li>
+      </ul>
+      <div id="map">
+        <div id="popupHelpContent" class="hidden">
+          <h3 class="helpContent">Help</h3>
+          <p>※マップのどこかをクリックすると、このHelp画面を閉じます。</p>
+          <ul class="legend">
+            <li><span class="fas fa-home helpLegend" aria-hidden="true">&nbsp;</span>マップの表示範囲を、HOMEへ移動します</li>
+            <li><span class="fas fa-question-circle helpLegend" aria-hidden="true">&nbsp;</span>このヘルプメッセージを表示します</li>
+          </ul>
+        </div>
+      </div>
+      <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
+      <script>
 const home_loc = {
   center: [139.7454511, 35.6585648],
   zoom: 16,
@@ -155,8 +144,7 @@ const map = new mapboxgl.Map({
 
 map.addControl(new MoveToHomeControl(home_loc));
 map.addControl(new HelpControl());
-</script>
-
+      </script>
     </div>
   </div>
 </body>
