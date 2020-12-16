@@ -11,6 +11,6 @@ JavaScriptライブラリのMapbox GL JSを使い、Web向けの地図を作成�
 ## Sample
 
 - [Sample Map | custom buttons](https://pages.isnot.jp/my-mapbox-samples/sample-custom-buttons.html)
-  -- 地図内に独自のボタン（コントロール）を追加する
+  - 地図内に独自のボタン（コントロール）を追加する
 - [Sample Map | trace : tracking user locations](https://pages.isnot.jp/my-mapbox-samples/sample-trace.html)
-  -- 地図を閲覧しているユーザーの位置情報を取得して、移動の履歴を地図上に軌跡として、線を表示する
+  - 地図を閲覧しているユーザーの位置情報を取得して、移動の履歴を地図上に軌跡として、線を表示する
