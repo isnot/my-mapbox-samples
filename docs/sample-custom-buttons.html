@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sample Map | custom buttons | isnot N3 | isnot N3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+<meta name="description" content="マップ コントロールの表示">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sample Map | custom buttons">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:author" content="isnot">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro#.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/fontawesome.min.css">
+<link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css" />
+<style>
+  #map { height: 600px; }
+  .fa-question-circle, .fa-home, .helpLegend { font-size: 24px; padding-left: 3px; } /* Home and Help Control buttons */
+
+  #popupHelpContent {
+    position:absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 4px;
+    z-index: 9000;
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    text-shadow: 1px 1px 0px #111, 3px 3px 3px #111;
+  }
+  #popupHelpContent p, #popupHelpContent ul {
+    margin: 5px 25px 25px 20px;
+    font-size: 15px;
+  }
+  #popupHelpContent ul { list-style-type: none; }
+  #popupHelpContent h3.helpContent {
+    margin: 10px;
+    color: white;
+    text-shadow: 2px 2px 0px #111;
+    font-size: 30px;
+  }
+
+  .hidden { display: none; }
+  #main, #sidebar {
+    display: block;
+    float: left;
+    width: 100%;
+    margin: 0;
+  }
+  .article-meta { display: none; }
+  .widget-wrap { display: none; }
+  #owner { display: block; }
+</style>
+</head>
+<body>
+  <div id="container">
+    <header class="article-header">
+      <h1>Sample Map | custom buttons</h1>
+    </header>
+    <div class="article">
+
+<ul>
+  <li><a target="_blank" rel="noopener" href="https://docs.mapbox.com/jp/mapbox-gl-js/example/navigation/">マップナビゲーションコントロールの表示</a></li>
+  <li><a target="_blank" rel="noopener" href="https://docs.mapbox.com/mapbox-gl-js/api/markers/#icontrol">IControl</a></li>
+</ul>
+<div id="map">
+  <div id="popupHelpContent" class="hidden">
+    <h3 class="helpContent">Help</h3>
+    <p>※マップのどこかをクリックすると、このHelp画面を閉じます。</p>
+    <ul class="legend">
+      <li><span class="fa fa-home helpLegend" aria-hidden="true">&nbsp;</span>マップの表示範囲を、HOMEへ移動します</li>
+      <li><span class="fa fa-question-circle helpLegend" aria-hidden="true">&nbsp;</span>このヘルプメッセージを表示します</li>
+    </ul>
+  </div>
+</div>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
+<script>
+const home_loc = {
+  center: [139.7454511, 35.6585648],
+  zoom: 16,
+  pitch: 45,
+  bearing: 0
+};
+
+class AbstractUserControl {
+  onAdd(map) {
+    throw new Exception('Implement this!');
+  }
+
+  onRemove() {
+    this._container.parentNode.removeChild(this._container);
+    this._map = undefined;
+  }
+
+  getDefaultPosition() {
+    return 'top-right';
+  }
+}
+
+class MoveToHomeControl extends AbstractUserControl {
+  constructor(options = {}) {
+    super();
+    this._options = options;
+  }
+
+  onAdd(map) {
+    this._map = map;
+    this._container = document.createElement('div');
+    this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+    this._container.innerHTML = `<button class="mapboxgl-ctrl-MoveToHome" type="button" aria-label="Move to Home" title="&#x1F3E0;Move to Home">
+  <span class="mapboxgl-ctrl-icon fa fa-home" aria-hidden="true">&nbsp;</span>
+</button>`;
+    this._container.addEventListener('click', () => {
+      if (map.loaded()) {
+        map.jumpTo(this._options);
+      }
+    });
+    return this._container;
+  }
+}
+
+class HelpControl extends AbstractUserControl {
+  onAdd(map) {
+    this._map = map;
+    const popupHelpContent = document.getElementById('popupHelpContent');
+    popupHelpContent.addEventListener('click', () => {
+      document.getElementById('popupHelpContent').classList.toggle('hidden');
+    });
+    this._container = document.createElement('div');
+    this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+    this._container.textContent = 'Help';
+    this._container.innerHTML = `<button class="mapboxgl-ctrl-Help" type="button" aria-label="Help" title="&#x2753;Help">
+    <span class="mapboxgl-ctrl-icon fa fa-question-circle" aria-hidden="true">&nbsp;</span>
+  </button>`;
+    this._container.addEventListener('click', () => {
+      document.getElementById('popupHelpContent').classList.toggle('hidden');
+    });
+    return this._container;
+  }
+}
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiaXNub3QiLCJhIjoiY2tkemV4MnR2MXRyMDJ4a2pzd2h1eHg1ayJ9.ALgtUeaHBDuvqvOR7008vA';
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/isnot/ckipufx564bp917od5gk7l5qt',
+  center: home_loc.center,
+  zoom: home_loc.zoom,
+  pitch: home_loc.pitch,
+  minZoom: 4,
+  hash: true,
+  localIdeographFontFamily: "'Noto Sans CJK JP', 'Noto Sans', sans-serif"
+});
+
+map.addControl(new MoveToHomeControl(home_loc));
+map.addControl(new HelpControl());
+</script>
+
+    </div>
+  </div>
+</body>
+</html>
