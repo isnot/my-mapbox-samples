@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sample Map | trace : tracking user locations | isnot N3 | isnot N3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+<meta name="description" content="マップ コントロールの表示">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sample Map | custom buttons">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:author" content="isnot">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro#.css">
+<link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css" />
+<style>
+  #map { height: 600px; }
+  .hidden { display: none; }
+  #main, #sidebar {
+    display: block;
+    float: left;
+    width: 100%;
+    margin: 0;
+  }
+  .article-meta, .widget-wrap { display: none; }
+  #owner { display: block; }
+</style>
+</head>
+
+<body>
+  <div id="container">
+    <header class="article-header">
+      <h1>Sample Map | trace : tracking user locations</h1>
+    </header>
+    <div class="article">
+
+<div id="map"></div>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js"></script>
+<script>
+const home_loc = {
+  center: [139.7454511, 35.6585648],
+  zoom: 17,
+  pitch: 60,
+  bearing: 0
+};
+
+class userLocationHistory {
+  constructor() {
+    this.history = new Set();
+    this.last_location = undefined;
+    this.min_duration = 2;
+    this.max_history = 150;
+    this.time_exceed = 3600;
+  }
+
+  _hasProperty(obj, prop) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
+  }
+
+  _add(geolocate) {
+    if (this._hasProperty(geolocate, 'timestamp')) {
+      this.history.add(geolocate);
+      this.last_location = geolocate;
+    }
+  }
+
+  size() {
+    return this.history.size;
+  }
+
+  getLast(size = 1) {
+    const asize = this.size < size ? this.size : parseInt(size, 10);
+    if (asize === 1) {
+      return this.last_location;
+    }
+    return Array.from(this.history).slice(-1 * asize);
+  }
+
+  reduce(size) {
+    if (this.size < 2) {
+      return;
+    }
+    if (size === 0) {
+      this.history.clear();
+    } else {
+      this.history = new Set(this.getLast(size));
+    }
+    return;
+  }
+
+  elapseTimeInSeconds(geolocate) {
+    if (this.last_location === undefined) {
+      return 0;
+    }
+    if (!this._hasProperty(geolocate, 'timestamp')) {
+      return 0;
+    }
+    return parseInt((geolocate.timestamp - this.last_location.timestamp) / 1000, 10);
+  }
+
+  addGeolocate(geolocate) {
+    // console.debug(geolocate, this.history);
+    const elapse = this.elapseTimeInSeconds(geolocate);
+
+    if (this.last_location === undefined) {
+      this._add(geolocate);
+    } else if (elapse > this.min_duration) {
+      this._add(geolocate);
+    }
+    const new_size = elapse > this.time_exceed ? 0 : this.max_history;
+    this.reduce(new_size);
+  }
+
+  getUserTrack() {
+    const t = [];
+    for (const item of this.getLast(this.max_history)) {
+      t.push([item.coords.longitude, item.coords.latitude]);
+    }
+    return t;
+  }
+}
+
+const userTrack = new userLocationHistory();
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiaXNub3QiLCJhIjoiY2tkemV4MnR2MXRyMDJ4a2pzd2h1eHg1ayJ9.ALgtUeaHBDuvqvOR7008vA';
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center: home_loc.center,
+  zoom: home_loc.zoom,
+  pitch: home_loc.pitch,
+  minZoom: 4,
+  hash: true,
+  localIdeographFontFamily: "'Noto Sans CJK JP', 'Noto Sans', sans-serif"
+});
+
+function setupGeoLine() {
+  map.addSource('route', {
+    'type': 'geojson',
+    'data': {
+      'type': 'Feature',
+      'properties': {},
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': []
+      }
+    }
+  });
+  map.addLayer({
+    'id': 'route',
+    'type': 'line',
+    'source': 'route',
+    'layout': {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    'paint': {
+      'line-color': '#888',
+      'line-width': 4
+    }
+  });
+}
+
+function updateGeoLine(coordinates) {
+  map.getSource('route').setData({
+    'type': 'Feature',
+    'properties': {},
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': coordinates
+    }
+  });
+}
+
+function onGeolocate(pos) {
+  userTrack.addGeolocate(pos);
+  updateGeoLine(userTrack.getUserTrack());
+}
+
+const geolocate = new mapboxgl.GeolocateControl({
+  positionOptions: {
+    enableHighAccuracy: true
+  },
+  trackUserLocation: true
+});
+map.addControl(geolocate);
+geolocate.on('geolocate', onGeolocate);
+
+map.on('load', () => {
+  setupGeoLine();
+});
+</script>
+
+    </div>
+  </div>
+</body>
+</html>
