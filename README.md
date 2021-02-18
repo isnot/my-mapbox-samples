@@ -5,7 +5,7 @@
 [Mapbox](https://www.mapbox.jp/maps)のサービスを利用して、独自の地図を作成するサンプルです。
 JavaScriptライブラリのMapbox GL JSを使い、Web向けの地図を作成しています。
 
-- Mapbox GL JS [概要 (v1.6.1)](https://docs.mapbox.com/jp/mapbox-gl-js/overview/) (ja) ※古いバージョン
+- Mapbox GL JS [概要 (v2.0.1)](https://docs.mapbox.com/jp/mapbox-gl-js/overview/) (ja)
 - Mapbox GL JS [Examples](https://docs.mapbox.com/mapbox-gl-js/example/) (en)
 
 ## Sample
